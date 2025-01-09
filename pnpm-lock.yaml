@@ -30,12 +30,12 @@ importers:
         specifier: ^1.11.0
         version: 1.11.0(vite@6.0.7)
     devDependencies:
+      esbuild:
+        specifier: ^0.24.2
+        version: 0.24.2
       typescript:
         specifier: ~5.6.2
         version: 5.6.3
-      vite:
-        specifier: ^6.0.5
-        version: 6.0.7
 
 packages:
 

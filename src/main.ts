@@ -10,7 +10,7 @@ GM_registerMenuCommand('Set webhook', () => {
         GM_setValue('webhookUrl', result);
         alert('URL set!');
     }
-})
+});
 
 setInterval(() => {
     const newElements = [...document.querySelectorAll('[data-testid^="feedItem-"], [data-testid^="postThreadItem-"]')].map(e => {

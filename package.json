@@ -10,8 +10,8 @@
     "lex": "tsx ../../Atproto/atcute-lex-cli-ex/src/index.ts generate -o src/lexicon.ts lexicons/*.yml lexicons/zio-lexicons/**/*.json"
   },
   "devDependencies": {
-    "typescript": "~5.6.2",
-    "vite": "^6.0.5"
+    "esbuild": "^0.24.2",
+    "typescript": "~5.6.2"
   },
   "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c",
   "dependencies": {
