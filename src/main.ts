@@ -38,7 +38,7 @@ const config = new GM_config({
         cryptoPassword: {
             type: 'text',
             label: 'Password used to encrypt your bookmarks',
-            default: GM_getValue('cryptoPassword') ?? '',
+            default: GM_getValue('cryptoPassword') ?? bytesToBase64(crypto.getRandomValues(new Uint8Array(16))),
         },
     }
 });
