@@ -52,31 +52,36 @@ if (!salt) {
 
 const processedElements = new WeakSet();
 
+let agentPromise: Promise<KittyAgent> | undefined = undefined;
 async function getLoggedInAgent() {
-    const { agent, manager } = await KittyAgent.createPdsWithCredentials(await config.getValue('bskyUsername', '') as string);
-
-    let session = GM_getValue('bskySession') as AtpSessionData;
-    if (session) {
-        try {
-            await manager.resume(session);
-            console.log('resumed session');
-        } catch (err) {
-            console.warn('failed to resume session', err);
+    agentPromise ??= (async () => {
+        const { agent, manager } = await KittyAgent.createPdsWithCredentials(await config.getValue('bskyUsername', '') as string);
+    
+        let session = GM_getValue('bskySession') as AtpSessionData;
+        if (session) {
+            try {
+                await manager.resume(session);
+                console.log('resumed session');
+            } catch (err) {
+                console.warn('failed to resume session', err);
+                session = await manager.login({
+                    identifier: await config.getValue('bskyUsername', '') as string,
+                    password: await config.getValue('bskyPassword', '') as string
+                });
+                GM_setValue('bskySession', session);
+            }
+        } else {
             session = await manager.login({
                 identifier: await config.getValue('bskyUsername', '') as string,
                 password: await config.getValue('bskyPassword', '') as string
             });
             GM_setValue('bskySession', session);
         }
-    } else {
-        session = await manager.login({
-            identifier: await config.getValue('bskyUsername', '') as string,
-            password: await config.getValue('bskyPassword', '') as string
-        });
-        GM_setValue('bskySession', session);
-    }
+    
+        return agent;
+    })();
 
-    return agent;
+    return agentPromise;
 }
 
 GM_registerMenuCommand('Config', () => {
