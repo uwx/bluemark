@@ -24,3 +24,4 @@ dist-ssr
 
 dist/*
 !dist/bluemark.user.js
+/bluemark.code-workspace
