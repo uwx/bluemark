@@ -1,0 +1,12 @@
+lexicon: 1
+id: invalid.uwx.encrypted.bookmark
+defs:
+  main:
+    type: record
+    description: A bookmark.
+    key: any
+    record:
+      type: object
+      properties:
+        encrypted-url:
+          type: bytes
