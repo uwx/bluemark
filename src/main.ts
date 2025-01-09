@@ -66,6 +66,7 @@ async function getLoggedInAgent() {
                 identifier: await config.getValue('bskyUsername', '') as string,
                 password: await config.getValue('bskyPassword', '') as string
             });
+            GM_setValue('bskySession', session);
         }
     } else {
         session = await manager.login({
@@ -177,7 +178,11 @@ setInterval(() => {
                         }
                     );
                 })(),
-            ])
+            ]).catch(err => {
+                console.error('Failed to bookmark', err);
+                alert('Failed to bookmark! Check console for details');
+                throw err;
+            })
         };
     
         if (!buttons) continue;
