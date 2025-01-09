@@ -55,7 +55,7 @@ const processedElements = new WeakSet();
 let agentPromise: Promise<KittyAgent> | undefined = undefined;
 async function getLoggedInAgent() {
     agentPromise ??= (async () => {
-        const { agent, manager } = await KittyAgent.createPdsWithCredentials(await config.getValue('bskyUsername', '') as string);
+        const { agent, manager } = await KittyAgent.createPdsWithCredentials(config.get('bskyUsername') as string);
     
         let session = GM_getValue('bskySession') as AtpSessionData;
         if (session) {
@@ -65,15 +65,15 @@ async function getLoggedInAgent() {
             } catch (err) {
                 console.warn('failed to resume session', err);
                 session = await manager.login({
-                    identifier: await config.getValue('bskyUsername', '') as string,
-                    password: await config.getValue('bskyPassword', '') as string
+                    identifier: config.get('bskyUsername') as string,
+                    password: config.get('bskyPassword') as string
                 });
                 GM_setValue('bskySession', session);
             }
         } else {
             session = await manager.login({
-                identifier: await config.getValue('bskyUsername', '') as string,
-                password: await config.getValue('bskyPassword', '') as string
+                identifier: config.get('bskyUsername') as string,
+                password: config.get('bskyPassword') as string
             });
             GM_setValue('bskySession', session);
         }
@@ -114,15 +114,15 @@ setInterval(() => {
             // bookmark post
             await Promise.all([
                 (async () => {
-                    if (!await config.getValue('publishToAtp', true)) {
+                    if (!config.get('publishToAtp', true)) {
                         console.log('not publishing to atp');
                         return;
                     }
 
                     if (
-                        !await config.getValue('cryptoPassword', '') ||
-                        !await config.getValue('bskyUsername', '') ||
-                        !await config.getValue('bskyPassword', '')) {
+                        !config.get('cryptoPassword') ||
+                        !config.get('bskyUsername') ||
+                        !config.get('bskyPassword')) {
                         alert('Bluesky account not configured!');
                         return;
                     }
@@ -136,7 +136,7 @@ setInterval(() => {
                     const [, repo, rkey] = postMatch;
 
                     const key = await deriveKey(
-                        await config.getValue('cryptoPassword', '') as string,
+                        config.get('cryptoPassword') as string,
                         base64ToBytes(salt)
                     );
 
@@ -145,7 +145,7 @@ setInterval(() => {
                     console.log('logged in');
                     await agent.put({
                         collection: 'io.github.uwx.bluemark.encryptedBookmark',
-                        repo: await config.getValue('bskyUsername', '') as string,
+                        repo: config.get('bskyUsername') as string,
                         rkey: tidNow(),
                         record: {
                             $type: 'io.github.uwx.bluemark.encryptedBookmark',
@@ -161,17 +161,17 @@ setInterval(() => {
                     });
                 })(),
                 (async () => {
-                    if (!await config.getValue('publishToDiscord', true)) {
+                    if (!config.get('publishToDiscord', true)) {
                         console.log('not publishing to discord');
                         return;
                     }
-                    if (!await config.getValue('webhookUrl', '')) {
+                    if (!config.get('webhookUrl')) {
                         alert('No webhook URL set!');
                         return;
                     }
 
                     await fetch(
-                        await config.getValue('webhookUrl', '') as string,
+                        config.get('webhookUrl') as string,
                         {
                             method: 'POST',
                             body: JSON.stringify({
