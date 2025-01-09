@@ -1,10 +1,12 @@
 // https://blog.elantha.com/encrypt-in-the-browser/
 
-export async function encryptData(content: string, password: string) {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-
+export async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
     const key = await getKey(password, salt);
 
+    return key;
+}
+
+export async function encryptData(content: string, key: CryptoKey): Promise<{ iv: string; cipher: string; }> {
     const iv = crypto.getRandomValues(new Uint8Array(12));
 
     const contentBytes = stringToBytes(content);
@@ -14,17 +16,12 @@ export async function encryptData(content: string, password: string) {
     );
 
     return {
-        salt: bytesToBase64(salt),
         iv: bytesToBase64(iv),
         cipher: bytesToBase64(cipher),
     };
 }
 
-export async function decryptData(encryptedData: { salt: string, iv: string, cipher: string }, password: string) {
-    const salt = base64ToBytes(encryptedData.salt);
-
-    const key = await getKey(password, salt);
-
+export async function decryptData(encryptedData: { iv: string, cipher: string }, key: CryptoKey) {
     const iv = base64ToBytes(encryptedData.iv);
 
     const cipher = base64ToBytes(encryptedData.cipher);
@@ -47,7 +44,7 @@ async function getKey(password: string, salt: Uint8Array) {
         ["deriveKey"]
     );
 
-    return crypto.subtle.deriveKey(
+    return await crypto.subtle.deriveKey(
         { name: "PBKDF2", salt, iterations: 200000, hash: "SHA-512" },
         initialKey,
         { name: "AES-GCM", length: 256 },
@@ -68,10 +65,10 @@ function stringToBytes(str: string) {
 
 import { toString as ui8ToString, fromString as ui8FromString } from "uint8arrays";
 
-function bytesToBase64(arr: Uint8Array) {
+export function bytesToBase64(arr: Uint8Array) {
     return ui8ToString(arr, 'base64');
 }
 
-function base64ToBytes(base64: string) {
+export function base64ToBytes(base64: string) {
     return ui8FromString(base64, 'base64');
 }

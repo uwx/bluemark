@@ -1,15 +1,10 @@
 import type { AtpSessionData } from "@atcute/client";
 import { KittyAgent } from "kitty-agent";
-import { encryptData } from "./crypto";
+import { base64ToBytes, bytesToBase64, deriveKey, encryptData } from "./crypto";
 import { now as tidNow } from "@atcute/tid";
 import { GM_config } from "GM_config";
-import { toString as ui8ToString } from "uint8arrays";
 
 console.log('hello world!');
-
-function arrayBufferToBase64(arrayBuffer: ArrayBufferLike) {
-    return ui8ToString(new Uint8Array(arrayBuffer), 'base64');
-}
 
 const config = new GM_config({
     id: 'bluemark',
@@ -44,9 +39,16 @@ const config = new GM_config({
             type: 'text',
             label: 'Password used to encrypt your bookmarks',
             default: GM_getValue('cryptoPassword') ?? '',
-        }
+        },
     }
 });
+
+// we share a salt between bookmarks so the bookmarks viewer doesn't have to derive a key for each bookmark, which would
+// be slow in the order of several seconds for just 100 bookmarks.
+let salt: string = GM_getValue('cryptoSalt');
+if (!salt) {
+    GM_setValue('cryptoSalt', salt = bytesToBase64(crypto.getRandomValues(new Uint8Array(16))));
+}
 
 const processedElements = new WeakSet();
 
@@ -127,6 +129,11 @@ setInterval(() => {
 
                     const [, repo, rkey] = postMatch;
 
+                    const key = await deriveKey(
+                        await config.getValue('cryptoPassword', '') as string,
+                        base64ToBytes(salt)
+                    );
+
                     console.log('logging in');
                     const agent = await getLoggedInAgent();
                     console.log('logged in');
@@ -141,8 +148,9 @@ setInterval(() => {
                                     repo,
                                     rkey,
                                 }),
-                                config.getValue('cryptoPassword', '') as string
-                            )
+                                key
+                            ),
+                            salt
                         }
                     });
                 })(),
