@@ -12,32 +12,32 @@ const config = new GM_config({
     fields: {
         publishToDiscord: {
             type: 'checkbox',
-            label: 'Publish bookmarks to Discord?',
+            label: ' Publish bookmarks to Discord?',
             default: true,
         },
         webhookUrl: {
             type: 'text',
-            label: 'Webhook URL',
+            label: ' Webhook URL',
             default: GM_getValue('webhookUrl') ?? '',
         },
         publishToAtp: {
             type: 'checkbox',
-            label: 'Publish bookmarks to ATP repository? (In encrypted form)',
+            label: ' Publish bookmarks to ATP repository? (In encrypted form)',
             default: true,
         },
         bskyUsername: {
             type: 'text',
-            label: 'ATP Username',
+            label: ' ATP Username',
             default: GM_getValue('bskyUsername') ?? '',
         },
         bskyPassword: {
             type: 'text',
-            label: 'ATP Password (or App Password)',
+            label: ' ATP Password (or App Password)',
             default: GM_getValue('bskyPassword') ?? '',
         },
         cryptoPassword: {
             type: 'text',
-            label: 'Password used to encrypt your bookmarks',
+            label: ' Passphrase for your ATP bookmarks (NOT your bluesky password)',
             default: GM_getValue('cryptoPassword') ?? bytesToBase64(crypto.getRandomValues(new Uint8Array(16))),
         },
     }
