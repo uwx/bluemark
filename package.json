@@ -19,6 +19,7 @@
     "@atcute/client": "^2.0.6",
     "@atcute/oauth-browser-client": "^1.0.9",
     "@atproto/syntax": "^0.3.1",
+    "@uwx/gm-fetch": "^1.0.0",
     "age-encryption": "^0.2.0",
     "kitty-agent": "^8.2.0",
     "vite-userscript-plugin": "^1.11.0"
