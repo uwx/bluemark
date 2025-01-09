@@ -8,5 +8,5 @@ defs:
     record:
       type: object
       properties:
-        encrypted-url:
+        encryptedUrl:
           type: bytes

@@ -4,69 +4,16 @@
 import "@atcute/client/lexicons";
 
 declare module "@atcute/client/lexicons" {
-  namespace BlueZioAtfileFinger {
-    /** A fingerprint of a browser upload. */
-    interface Browser {
-      [Brand.Type]?: "blue.zio.atfile.finger#browser";
-      id?: string;
-      userAgent?: string;
-    }
-    /** A fingerprint of a machine upload. */
-    interface Machine {
-      [Brand.Type]?: "blue.zio.atfile.finger#machine";
-      app?: string;
-      host?: string;
-      id?: string;
-      os?: string;
-    }
-  }
-
-  namespace BlueZioAtfileLock {
-    /** A reference to a locked file. */
+  namespace InvalidUwxEncryptedBookmark {
+    /** A bookmark. */
     interface Record {
-      $type: "blue.zio.atfile.lock";
-      lock?: boolean;
-    }
-  }
-
-  namespace BlueZioAtfileMeta {
-    /** Unknown metadata for an uploaded file. */
-    interface Unknown {
-      [Brand.Type]?: "blue.zio.atfile.meta#unknown";
-      reason?: string;
-    }
-  }
-
-  namespace BlueZioAtfileUpload {
-    /** A reference to an uploaded blob. */
-    interface Record {
-      $type: "blue.zio.atfile.upload";
-      blob?: At.Blob;
-      checksum?: BlueZioAtfileUpload.Checksum;
-      createdAt?: string;
-      file?: BlueZioAtfileUpload.File;
-      finger?: Brand.Union<
-        BlueZioAtfileFinger.Browser | BlueZioAtfileFinger.Machine
-      >;
-      meta?: Brand.Union<BlueZioAtfileMeta.Unknown>;
-    }
-    interface Checksum {
-      [Brand.Type]?: "blue.zio.atfile.upload#checksum";
-      algo?: string;
-      hash?: string;
-    }
-    interface File {
-      [Brand.Type]?: "blue.zio.atfile.upload#file";
-      mimeType?: string;
-      modifiedAt?: string;
-      name?: string;
-      size?: number;
+      $type: "invalid.uwx.encrypted.bookmark";
+      encryptedUrl?: At.Bytes;
     }
   }
 
   interface Records {
-    "blue.zio.atfile.lock": BlueZioAtfileLock.Record;
-    "blue.zio.atfile.upload": BlueZioAtfileUpload.Record;
+    "invalid.uwx.encrypted.bookmark": InvalidUwxEncryptedBookmark.Record;
   }
 
   interface Queries {}

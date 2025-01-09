@@ -15,13 +15,15 @@
   },
   "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c",
   "dependencies": {
+    "@atcute/cbor": "^2.1.1",
     "@atcute/cid": "^2.1.0",
     "@atcute/client": "^2.0.6",
     "@atcute/oauth-browser-client": "^1.0.9",
+    "@atcute/tid": "^1.0.2",
     "@atproto/syntax": "^0.3.1",
-    "@uwx/gm-fetch": "^1.0.0",
+    "@uwx/gm-fetch": "^2.0.3",
     "age-encryption": "^0.2.0",
-    "kitty-agent": "^8.2.0",
+    "kitty-agent": "^8.3.0",
     "vite-userscript-plugin": "^1.11.0"
   }
 }
