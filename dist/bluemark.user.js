@@ -1,14 +1,14 @@
 // ==UserScript==
-// @name     bluemark
-// @version  0.0.0
-// @author   uwx
+// @name        bluemark
+// @version     0.0.0
+// @author      uwx
 // @description Bookmark skeets from Bluesky to Discord
-// @include  https://bsky.app/*
-// @include  https://*.bsky.dev/*
-// @grant    GM_setValue
-// @grant    GM_getValue
-// @grant    GM_registerMenuCommand
-// @grant    GM_xmlhttpRequest
+// @include     https://bsky.app/*
+// @include     https://*.bsky.dev/*
+// @grant       GM_setValue
+// @grant       GM_getValue
+// @grant       GM_registerMenuCommand
+// @grant       GM_xmlhttpRequest
 // ==/UserScript==
 
 (() => { // webpackBootstrap
