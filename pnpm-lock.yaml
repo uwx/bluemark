@@ -26,9 +26,6 @@ importers:
       '@atproto/syntax':
         specifier: ^0.3.1
         version: 0.3.1
-      '@uwx/gm-fetch':
-        specifier: ^2.0.3
-        version: 2.0.3
       age-encryption:
         specifier: ^0.2.0
         version: 0.2.0
@@ -337,9 +334,6 @@ packages:
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
-
-  '@uwx/gm-fetch@2.0.3':
-    resolution: {integrity: sha512-ath2igune4NpYAv2Rgu0/5gpnYesbTfPj0nbNKSw1O8+wYshzPQpE0x6UbD1eaX1t6Dd+7sxJzLU0RCCLrIG8Q==}
 
   age-encryption@0.2.0:
     resolution: {integrity: sha512-Y05OOztNCxYA68jxAJw+kmwYqXDRV6wVazEGXio1LiUofFn8zIjH++WV0oyq5dEBPyLHrnN/7X/C23qk4r5row==}
@@ -769,8 +763,6 @@ snapshots:
   '@scure/base@1.2.1': {}
 
   '@types/estree@1.0.6': {}
-
-  '@uwx/gm-fetch@2.0.3': {}
 
   age-encryption@0.2.0:
     dependencies:

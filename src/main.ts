@@ -1,5 +1,4 @@
 import type { AtpSessionData } from "@atcute/client";
-import { GM_fetch } from "@uwx/gm-fetch";
 import { KittyAgent } from "kitty-agent";
 import { encryptData } from "./crypto";
 import { toBytes } from "@atcute/cbor";
@@ -123,7 +122,7 @@ setInterval(() => {
                         return;
                     }
         
-                    await GM_fetch(
+                    await fetch(
                         GM_getValue('webhookUrl'),
                         {
                             method: 'POST',
