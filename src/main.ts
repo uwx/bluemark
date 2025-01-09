@@ -1,57 +1,84 @@
 import type { AtpSessionData } from "@atcute/client";
 import { KittyAgent } from "kitty-agent";
 import { encryptData } from "./crypto";
-import { toBytes } from "@atcute/cbor";
 import { now as tidNow } from "@atcute/tid";
+import { GM_config } from "GM_config";
+import { toString as ui8ToString } from "uint8arrays";
 
 console.log('hello world!');
+
+function arrayBufferToBase64(arrayBuffer: ArrayBufferLike) {
+    return ui8ToString(new Uint8Array(arrayBuffer), 'base64');
+}
+
+const config = new GM_config({
+    id: 'bluemark',
+    title: 'Bluemark Settings',
+    fields: {
+        publishToDiscord: {
+            type: 'checkbox',
+            label: 'Publish bookmarks to Discord?',
+            default: true,
+        },
+        webhookUrl: {
+            type: 'text',
+            label: 'Webhook URL',
+            default: GM_getValue('webhookUrl') ?? '',
+        },
+        publishToAtp: {
+            type: 'checkbox',
+            label: 'Publish bookmarks to ATP repository? (In encrypted form)',
+            default: true,
+        },
+        bskyUsername: {
+            type: 'text',
+            label: 'ATP Username',
+            default: GM_getValue('bskyUsername') ?? '',
+        },
+        bskyPassword: {
+            type: 'text',
+            label: 'ATP Password (or App Password)',
+            default: GM_getValue('bskyPassword') ?? '',
+        },
+        cryptoPassword: {
+            type: 'text',
+            label: 'Password used to encrypt your bookmarks',
+            default: GM_getValue('cryptoPassword') ?? '',
+        }
+    }
+});
 
 const processedElements = new WeakSet();
 
 async function getLoggedInAgent() {
-    const { agent, manager } = await KittyAgent.createPdsWithCredentials(GM_getValue('bskyUsername'));
+    const { agent, manager } = await KittyAgent.createPdsWithCredentials(await config.getValue('bskyUsername', '') as string);
 
     let session = GM_getValue('bskySession') as AtpSessionData;
     if (session) {
         try {
             await manager.resume(session);
+            console.log('resumed session');
         } catch (err) {
             console.warn('failed to resume session', err);
-            session = await manager.login({ identifier: GM_getValue('bskyUsername'), password: GM_getValue('bskyPassword') });
+            session = await manager.login({
+                identifier: await config.getValue('bskyUsername', '') as string,
+                password: await config.getValue('bskyPassword', '') as string
+            });
         }
     } else {
-        session = await manager.login({ identifier: GM_getValue('bskyUsername'), password: GM_getValue('bskyPassword') });
+        session = await manager.login({
+            identifier: await config.getValue('bskyUsername', '') as string,
+            password: await config.getValue('bskyPassword', '') as string
+        });
         GM_setValue('bskySession', session);
     }
 
     return agent;
 }
 
-GM_registerMenuCommand('Set webhook', () => {
-    const result = prompt('Paste webhook URL here');
-    if (result != null) {
-        GM_setValue('webhookUrl', result);
-        alert('URL set!');
-    }
-});
-
-GM_registerMenuCommand('Set Bluesky details', () => {
-    let result = prompt('Bluesky username');
-    if (result != null) {
-        GM_setValue('bskyUsername', result);
-    }
-    result = prompt('Bluesky password');
-    if (result != null) {
-        GM_setValue('bskyPassword', result);
-    }
-});
-
-GM_registerMenuCommand('Set encryption password', () => {
-    const result = prompt('Paste password here');
-    if (result != null) {
-        GM_setValue('cryptoPassword', result);
-    }
-});
+GM_registerMenuCommand('Config', () => {
+    config.open();
+})
 
 setInterval(() => {
     const newElements = [...document.querySelectorAll('[data-testid^="feedItem-"], [data-testid^="postThreadItem-"]')].map(e => {
@@ -79,7 +106,15 @@ setInterval(() => {
             // bookmark post
             await Promise.all([
                 (async () => {
-                    if (!GM_getValue('cryptoPassword') || !GM_getValue('bskyUsername') || !GM_getValue('bskyPassword')) {
+                    if (!await config.getValue('publishToAtp', true)) {
+                        console.log('not publishing to atp');
+                        return;
+                    }
+
+                    if (
+                        !await config.getValue('cryptoPassword', '') ||
+                        !await config.getValue('bskyUsername', '') ||
+                        !await config.getValue('bskyPassword', '')) {
                         alert('Bluesky account not configured!');
                         return;
                     }
@@ -96,34 +131,33 @@ setInterval(() => {
                     const agent = await getLoggedInAgent();
                     console.log('logged in');
                     await agent.put({
-                        collection: 'invalid.uwx.encrypted.bookmark',
-                        repo: GM_getValue('bskyUsername'),
+                        collection: 'io.github.uwx.bluemark.encryptedBookmark',
+                        repo: await config.getValue('bskyUsername', '') as string,
                         rkey: tidNow(),
                         record: {
-                            $type: 'invalid.uwx.encrypted.bookmark',
-                            encryptedUrl: toBytes(
-                                    await encryptData(
-                                        new TextEncoder().encode(
-                                            JSON.stringify({
-                                                repo,
-                                                rkey,
-                                            }
-                                        )
-                                    ),
-                                    GM_getValue('cryptoPassword')
-                                )
+                            $type: 'io.github.uwx.bluemark.encryptedBookmark',
+                            ...await encryptData(
+                                JSON.stringify({
+                                    repo,
+                                    rkey,
+                                }),
+                                config.getValue('cryptoPassword', '') as string
                             )
                         }
                     });
                 })(),
                 (async () => {
-                    if (!GM_getValue('webhookUrl')) {
+                    if (!await config.getValue('publishToDiscord', true)) {
+                        console.log('not publishing to discord');
+                        return;
+                    }
+                    if (!await config.getValue('webhookUrl', '')) {
                         alert('No webhook URL set!');
                         return;
                     }
-        
+
                     await fetch(
-                        GM_getValue('webhookUrl'),
+                        await config.getValue('webhookUrl', '') as string,
                         {
                             method: 'POST',
                             body: JSON.stringify({

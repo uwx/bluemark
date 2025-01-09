@@ -4,16 +4,18 @@
 import "@atcute/client/lexicons";
 
 declare module "@atcute/client/lexicons" {
-  namespace InvalidUwxEncryptedBookmark {
-    /** A bookmark. */
+  namespace IoGithubUwxBluemarkEncryptedBookmark {
+    /** An encrypted bookmark. */
     interface Record {
-      $type: "invalid.uwx.encrypted.bookmark";
-      encryptedUrl?: At.Bytes;
+      $type: "io.github.uwx.bluemark.encryptedBookmark";
+      cipher: string;
+      iv: string;
+      salt: string;
     }
   }
 
   interface Records {
-    "invalid.uwx.encrypted.bookmark": InvalidUwxEncryptedBookmark.Record;
+    "io.github.uwx.bluemark.encryptedBookmark": IoGithubUwxBluemarkEncryptedBookmark.Record;
   }
 
   interface Queries {}

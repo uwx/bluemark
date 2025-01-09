@@ -1,12 +1,20 @@
 lexicon: 1
-id: invalid.uwx.encrypted.bookmark
+id: io.github.uwx.bluemark.encryptedBookmark
 defs:
   main:
     type: record
-    description: A bookmark.
-    key: any
+    description: An encrypted bookmark.
+    key: tid
     record:
       type: object
+      required:
+        - salt
+        - iv
+        - cipher
       properties:
-        encryptedUrl:
-          type: bytes
+        salt:
+          type: string
+        iv:
+          type: string
+        cipher:
+          type: string
