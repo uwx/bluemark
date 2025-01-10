@@ -1,7 +1,7 @@
 {
   "name": "bluemark",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "Bookmark skeets from Bluesky to Discord",
   "author": {
