@@ -12,7 +12,7 @@ to your Bluesky repo in encrypted form (Alpha)
 ## Viewing bookmarks
 
 If you enable 'Publish bookmarks to ATP repository' and configure it properly, your bookmarks will be viewable at
-[uwx.github.io/bluemark-viewer](https://uwx.github.io/bluemark-viewer/) using the same passphrase you set.
+[bluemark-viewer.github.io](https://bluemark-viewer.github.io/) using the same passphrase you set.
 
 ## Security
 
