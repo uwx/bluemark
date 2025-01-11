@@ -1,6 +1,6 @@
 // @ts-check
 
-const { name, version, description, author } = require('./package.json');
+const { name } = require('./package.json');
 
 /** @type {import('@rspack/cli').Configuration} */
 module.exports = {
@@ -34,12 +34,7 @@ module.exports = {
     },
     plugins: [
         require('./rspack-userscript-plugin.cjs')({
-            name,
             header: {
-                name: name,
-                version: version,
-                author: author.name,
-                description: description,
                 include: [
                     'https://bsky.app/*',
                     'https://*.bsky.dev/*',

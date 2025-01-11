@@ -4,10 +4,12 @@ const rspack = require('@rspack/core');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 
+const { name, version, description, author } = require('./package.json');
+
 /**
  * @typedef Options
  * @property {Record<string, string[] | string>} header
- * @property {string} name
+ * @property {string} [name]
  */
 
 /**
@@ -43,7 +45,13 @@ module.exports = (options) => ({
      */
     apply(compiler) {                
         new rspack.BannerPlugin({
-            banner: generateUserscriptHeader(options.header),
+            banner: () => generateUserscriptHeader({
+                name: name,
+                version: version,
+                author: author.name,
+                description: description,
+                ...options.header
+            }),
             raw: true,
         }).apply(compiler);
 
@@ -53,8 +61,15 @@ module.exports = (options) => ({
             await fs.writeFile(
                 `./dist/${options.name}.proxy.user.js`,
                 generateUserscriptHeader({
+                    name: name,
+                    version: version,
+                    author: author.name,
+                    description: description,
                     ...options.header,
-                    require: `file://${path.resolve(`dist/${options.name}.user.js`)}`
+                    require: [
+                        ...(options.header.require ?? []),
+                        `file://${path.resolve(`dist/${options.name}.user.js`)}`
+                    ]
                 })
             );
         })
