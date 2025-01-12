@@ -6,6 +6,33 @@ import { GM_config } from "GM_config";
 
 console.log('hello world!');
 
+function addStyle(aCss: string) {
+    const head = document.head ?? document.getElementsByTagName('head')[0];
+    if (head) {
+        const style = document.createElement('style');
+        style.setAttribute('type', 'text/css');
+        style.textContent = aCss;
+        head.appendChild(style);
+        return style;
+    }
+    return null;
+};
+
+addStyle(`
+.maxine-bookmark-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+}
+.maxine-bookmark-button:hover {
+    background: rgb(20, 27, 35);
+    border-radius: 50%;
+}
+`);
+
 const config = new GM_config({
     id: 'bluemark',
     title: 'Bluemark Settings',
@@ -106,6 +133,7 @@ setInterval(() => {
     
         const button = document.createElement('button');
         button.textContent = '📌';
+        button.className = 'maxine-bookmark-button';
         button.onclick = async e => {
             e.stopPropagation();
             e.preventDefault();
