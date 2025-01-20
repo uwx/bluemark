@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        bluemark
-// @version     0.0.1
+// @version     0.0.2
 // @author      uwx
 // @description Bookmark skeets from Bluesky to Discord
 // @include     https://bsky.app/*
